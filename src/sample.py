@@ -93,7 +93,11 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
             ]
 
         def cond(*args):
-            return True
+            ###########MODIFIED START###########
+            #Below is modified to stop samples when they reach tokens 27 and 91 (< and | respectively), can be modified ad hoc, if a large stop token is required
+            #you need to insert a length check to ensure it does not throw an error in the beginning of your script
+            return tf.math.logical_and(tf.not_equal(output[0][-1], tf.cast(91, tf.int32)), tf.not_equal(output[0][-2], tf.cast(27, tf.int32))) #Modified
+            ###########MODIFIED END###########
 
         _, _, tokens = tf.while_loop(
             cond=cond, body=body,
